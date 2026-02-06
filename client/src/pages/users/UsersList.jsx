@@ -4,11 +4,7 @@ import UserToolbar from "../../components/users/UserToolbar";
 import UsersTable from "../../components/users/UsersTable";
 import { UserPagination } from "../../components/users/UserPagination";
 
-import {
-  fetchUsers,
-  exportUsersCsvApi,
-  deleteUserApi,
-} from "../../api/userApi";
+import { fetchUsers, exportUsersCsvApi, deleteUserApi } from "../../api/userApi";
 
 export default function UsersList() {
   const [search, setSearch] = useState("");
@@ -24,6 +20,7 @@ export default function UsersList() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
 
   const loadUsers = async () => {
@@ -45,18 +42,15 @@ export default function UsersList() {
     }
   };
 
-  // fetch when page/search changes
+
   useEffect(() => {
     loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, page, limit]);
 
-  // reset page when search changes
   useEffect(() => {
     setPage(1);
   }, [search]);
 
-  // optional: Search button triggers a fetch (but fetch already happens on typing)
   const handleSearchClick = () => {
     setPage(1);
     loadUsers();
@@ -78,6 +72,8 @@ export default function UsersList() {
   };
 
   const handleExportCSV = async () => {
+    if (exporting) return;
+
     const q = search.trim();
     const count = pagination.total;
 
@@ -89,18 +85,28 @@ export default function UsersList() {
     if (!ok) return;
 
     try {
-      const blob = await exportUsersCsvApi({ search });
+      setExporting(true);
+
+      // ✅ server-side export (best for large data)
+      const blob = await exportUsersCsvApi({ search: q });
 
       const url = window.URL.createObjectURL(blob);
+
+      // nicer filename
+      const stamp = new Date().toISOString().slice(0, 10);
+      const filename = q ? `users_${q}_${stamp}.csv` : `users_${stamp}.csv`;
+
       const a = document.createElement("a");
       a.href = url;
-      a.download = "users.csv";
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
       alert(err?.response?.data?.message || err.message || "Export failed");
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -120,6 +126,11 @@ export default function UsersList() {
               onSearchClick={handleSearchClick}
               onExportCSV={handleExportCSV}
             />
+            {exporting ? (
+              <div className="mt-3 text-xs text-gray-500">
+                Exporting CSV...
+              </div>
+            ) : null}
           </div>
 
           {loading ? (

@@ -160,6 +160,7 @@ export const exportUsersCSV = async (req, res) => {
             { firstName: { $regex: search, $options: "i" } },
             { lastName: { $regex: search, $options: "i" } },
             { email: { $regex: search, $options: "i" } },
+            { mobile: { $regex: search, $options: "i" } },
             { location: { $regex: search, $options: "i" } },
             { gender: { $regex: search, $options: "i" } },
             { status: { $regex: search, $options: "i" } },
@@ -169,17 +170,21 @@ export const exportUsersCSV = async (req, res) => {
 
     const users = await User.find(query);
 
-    let csv = "Name,Email,Gender,Status,Location\n";
+    let csv = "Name,Email,Mobile,Gender,Status,Location\n";
 
     users.forEach((u) => {
-      csv += `"${u.firstName} ${u.lastName}","${u.email}","${u.gender}","${u.status}","${u.location}"\n`;
+      csv += `"${u.firstName} ${u.lastName}","${u.email}","${u.mobile}","${u.gender}","${u.status}","${u.location}"\n`;
     });
 
     res.setHeader("Content-Type", "text/csv");
-    res.setHeader("Content-Disposition", "attachment; filename=users.csv");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=users.csv"
+    );
 
-    res.send(csv);
+    res.status(200).send(csv);
   } catch (error) {
+    console.error("EXPORT CSV ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
