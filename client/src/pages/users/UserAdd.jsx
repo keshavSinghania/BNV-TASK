@@ -95,7 +95,7 @@ export default function UserAdd() {
                   onChange={onChange}
                   required
                   minLength={2}
-                  placeholder="Keshav"
+                  placeholder="First name"
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function UserAdd() {
                   onChange={onChange}
                   required
                   minLength={2}
-                  placeholder="Singhania"
+                  placeholder="Last name"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function UserAdd() {
                 value={form.email}
                 onChange={onChange}
                 required
-                placeholder="keshav@gmail.com"
+                placeholder="email"
               />
             </div>
 
@@ -148,7 +148,7 @@ export default function UserAdd() {
                   setForm((p) => ({ ...p, mobile: val }));
                 }}
                 required
-                placeholder="9876543210"
+                placeholder="mobile"
               />
               <p className="mt-1 text-xs text-gray-500">
                 Enter a valid 10-digit number.
@@ -198,7 +198,7 @@ export default function UserAdd() {
                   value={form.location}
                   onChange={onChange}
                   required
-                  placeholder="Delhi"
+                  placeholder="Location"
                 />
               </div>
             </div>

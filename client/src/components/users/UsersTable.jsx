@@ -19,9 +19,8 @@ const getUserId = (user) => user?._id || user?.id;
 export default function UsersTable({ users = [], onDelete }) {
   return (
     <div className="w-full">
-      {/* Desktop table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full min-w-[980px]">
+        <table className="w-full min-w-245">
           <thead className="bg-gray-50 border-y">
             <tr className="text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
               <th className="px-4 py-3">User</th>
@@ -45,14 +44,12 @@ export default function UsersTable({ users = [], onDelete }) {
                 <tr key={id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      {/* Avatar: image if present else initials */}
                       {user?.avatarUrl ? (
                         <img
                           src={user.avatarUrl}
                           alt="avatar"
                           className="h-10 w-10 rounded-full object-cover border border-gray-200"
                           onError={(e) => {
-                            // hide broken image, show initials fallback
                             e.currentTarget.style.display = "none";
                           }}
                         />
